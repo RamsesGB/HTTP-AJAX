@@ -20,8 +20,22 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5000/friends')
+    axios
+    .get('http://localhost:5000/friends')
     .then(res => this.setState({ friends: res.data }))
+    .catch(err => console.log(err));
+  }
+
+  addFriend = (e, friend) => {
+    e.preventDefault();
+    axios
+    .post('http://localhost:5000/friends', friend)
+    .then(res => {
+      console.log(res);
+      this.setState({
+        friends: res.data
+      })
+    })
     .catch(err => console.log(err));
   }
 
@@ -29,6 +43,8 @@ class App extends React.Component {
     return(
       <div className='App'>
         <div className='nav'>
+          <NavLink exact to='/'>Home</NavLink>
+          <br></br>
           <NavLink exact to='/Add-Friend'>Add Friend</NavLink>
         </div>
         <Route 
@@ -38,7 +54,7 @@ class App extends React.Component {
         />
         <Route
           path='/Add-Friend'
-          render={props => (<NewFriendForm {...props} />)}
+          render={props => (<NewFriendForm {...props} addFriend={this.addFriend} />)}
         />
       </div>
     );
